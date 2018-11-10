@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="mercy.digital">
+    <serverData>
+      <paths name="mercy.digital">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tomcat/apache-tomcat-9.0.13/webapps" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

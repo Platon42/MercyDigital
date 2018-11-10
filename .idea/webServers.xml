@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="363b8f3b-2dd2-4385-a2b8-2cd44a1ac19f" name="mercy.digital" url="http://mercy.digital">
+        <fileTransfer host="mercy.digital" port="22" rootFolder="/home/dcore" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
