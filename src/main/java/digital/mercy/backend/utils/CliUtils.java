@@ -1,11 +1,15 @@
 package digital.mercy.backend.utils;
 
+import ch.decent.sdk.api.AccountApi;
+import ch.decent.sdk.api.TransactionApi;
 import ch.decent.sdk.crypto.Address;
 import ch.decent.sdk.crypto.ECKeyPair;
 import ch.decent.sdk.model.AccountCreateOperation;
 import ch.decent.sdk.model.ChainObject;
 import ch.decent.sdk.model.ObjectType;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -25,25 +29,48 @@ public class CliUtils {
     private int id;
     private String password;
 
-    public CliUtils(int id, String password) throws IOException {
+    public CliUtils(int id, String password) {
         this.id=id;
         this.password = password;
     }
 
-    public HashMap<String, String> createAccount(String account_name, String registrar_account, String address) throws IOException {
+    public String createAccount(String account_name) throws IOException {
 
-        ECKeyPair ecKeyPair = new ECKeyPair(new SecureRandom());
-        Address dstAddress = new Address(ecKeyPair.getPublic(), "DST");
+//        ECKeyPair ecKeyPair = new ECKeyPair(new SecureRandom());
+//        Address dstAddress = new Address(ecKeyPair.getPublic(), "DCT");
+//
+//        new AccountCreateOperation(new ChainObject(ObjectType.ACCOUNT_OBJECT), account_name, dstAddress);
 
-        AccountCreateOperation accountCreateOperation =
-                new AccountCreateOperation(new ChainObject(ObjectType.ACCOUNT_OBJECT), account_name, dstAddress);
+        unlockWallet();
+        String suggest = toCLI(buidJson("suggest_brain_key",null));
+        System.out.println(suggest);
+        JsonParser jsonParser = new JsonParser();
 
-        System.out.println(toCLI(buidJson("suggest_brain_key",null)));
+        String address = jsonParser
+                .parse(suggest)
+                .getAsJsonObject().getAsJsonObject("result")
+                .get("pub_key").getAsString();
+        String priv_key = jsonParser
+                .parse(suggest)
+                .getAsJsonObject().getAsJsonObject("result")
+                .get("wif_priv_key").getAsString();
+        String brain_priv_key = jsonParser
+                .parse(suggest)
+                .getAsJsonObject().getAsJsonObject("result")
+                .get("brain_priv_key").getAsString();
 
-        return null;
+        List<String> params = new ArrayList<>();
+
+        params.add(account_name);
+        params.add(address);
+        params.add(address);
+        params.add("decent");
+        params.add("true");
+
+        return toCLI(buidJson("register_account", params));
     }
 
-    public HashMap<String,String> transfer (String sender, String receiver, String amount, String currency) throws IOException {
+    public String transfer (String sender, String receiver, String amount, String currency) throws IOException {
 
         unlockWallet();
         List<String> params = new ArrayList<>();
@@ -55,10 +82,8 @@ public class CliUtils {
         params.add("OK");
         params.add("true");
 
-        System.out.println(buidJson("transfer", params));
+        return toCLI(buidJson("transfer", params));
 
-        System.out.println(toCLI(buidJson("transfer", params)));
-        return null;
     }
 
     public String getHistory (String address, String depth) throws IOException {
