@@ -11,7 +11,7 @@ public class AuthEntity {
     private int loginId;
 
     @Basic
-    @Column(name = "login", nullable = true, length = 100)
+    @Column(name = "login", nullable = false, length = 100)
     public String getLogin() {
         return login;
     }

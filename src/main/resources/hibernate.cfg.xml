@@ -6,12 +6,13 @@
     <session-factory>
         <property name="connection.url">jdbc:postgresql://104.207.130.153:5432/mercydb</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.username">chain</property>
+        <property name="hibernate.connection.password">chain</property>
+
         <mapping class="digital.mercy.backend.db.AuthEntity"/>
         <mapping class="digital.mercy.backend.db.ClientsEntity"/>
         <mapping class="digital.mercy.backend.db.OrganizationsEntity"/>
         <mapping class="digital.mercy.backend.db.WalletsEntity"/>
-        <!-- <property name="connection.username"/> -->
-        <!-- <property name="connection.password"/> -->
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->

@@ -2,6 +2,7 @@ import ch.decent.sdk.DCoreApi;
 import ch.decent.sdk.DCoreSdk;
 import ch.decent.sdk.api.*;
 import ch.decent.sdk.model.*;
+import digital.mercy.backend.security.Crypto;
 import digital.mercy.backend.utils.CliUtils;
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
@@ -30,7 +31,10 @@ public class Test {
 
         CliUtils cliUtils = new CliUtils(100,"");
         //cliUtils.transfer("decent","seeder","3","DCT");
-        System.out.println(cliUtils.createAccount("maksimmmm"));
+        Crypto crypto = new Crypto();
+        System.out.println(crypto.encrypt("dshd98d4"));
+        System.out.println(crypto.decrypt("ZAiOCWsXC40="));
+        //System.out.println(cliUtils.createAccount("maksimmmm"));
 
 
         init1 = dCoreApi.getBalanceApi().getBalance("decent");

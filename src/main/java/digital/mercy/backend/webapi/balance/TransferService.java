@@ -1,8 +1,9 @@
-package digital.mercy.backend.webapi.history;
+package digital.mercy.backend.webapi.balance;
 
 import com.google.gson.Gson;
 import digital.mercy.backend.security.Crypto;
 import digital.mercy.backend.utils.CliUtils;
+import digital.mercy.backend.webapi.history.HistoryRequest;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,8 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-@WebServlet("/getHistory")
-public class HistoryService extends HttpServlet {
+@WebServlet("/Transfer")
+public class TransferService extends HttpServlet {
 
 
     @Override
@@ -28,7 +29,7 @@ public class HistoryService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is getHistory service");
+            writer.println("Hello, is Transfer service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,11 +44,14 @@ public class HistoryService extends HttpServlet {
         Crypto crypto = new Crypto();
 
         String body = httpreq.getReader().lines().collect(Collectors.joining());
-        HistoryRequest historyRequest = new Gson().fromJson(body, HistoryRequest.class);
-        CliUtils cliUtils = new CliUtils(1, crypto.decrypt("ZAiOCWsXC40="));
+        TransferReq transferReq = new Gson().fromJson(body, TransferReq.class);
+        CliUtils cliUtils = new CliUtils(  1,crypto.decrypt("ZAiOCWsXC40="));
 
-        httpresp.getWriter().print(cliUtils.getHistory(historyRequest.getAccount(), historyRequest.getDepth()));
-
+        httpresp.getWriter().print(cliUtils.transfer(
+                transferReq.getSender(),
+                transferReq.getReceiver(),
+                transferReq.getAmount(),
+                transferReq.getCurrency()));
     }
 
 }

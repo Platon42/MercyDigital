@@ -58,7 +58,8 @@ public class CliUtils {
                 .parse(suggest)
                 .getAsJsonObject().getAsJsonObject("result")
                 .get("brain_priv_key").getAsString();
-
+        
+        
         List<String> params = new ArrayList<>();
 
         params.add(account_name);

@@ -9,12 +9,14 @@ import java.util.Objects;
 public class ClientsEntity {
     private String login;
     private String phone;
-    private String name;
+    private String firstName;
     private Date birthDate;
     private String region;
     private String job;
     private Integer balance;
     private int loginId;
+    private String lastName;
+    private AuthEntity authByLoginId;
 
     @Basic
     @Column(name = "login", nullable = true, length = 32)
@@ -38,12 +40,12 @@ public class ClientsEntity {
 
     @Basic
     @Column(name = "first_name", nullable = true, length = 100)
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     @Basic
@@ -96,6 +98,16 @@ public class ClientsEntity {
         this.loginId = loginId;
     }
 
+    @Basic
+    @Column(name = "last_name", nullable = true, length = 100)
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,15 +116,26 @@ public class ClientsEntity {
         return loginId == that.loginId &&
                 Objects.equals(login, that.login) &&
                 Objects.equals(phone, that.phone) &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(firstName, that.firstName) &&
                 Objects.equals(birthDate, that.birthDate) &&
                 Objects.equals(region, that.region) &&
                 Objects.equals(job, that.job) &&
-                Objects.equals(balance, that.balance);
+                Objects.equals(balance, that.balance) &&
+                Objects.equals(lastName, that.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, phone, name, birthDate, region, job, balance, loginId);
+        return Objects.hash(login, phone, firstName, birthDate, region, job, balance, loginId, lastName);
+    }
+
+    @OneToOne
+    @JoinColumn(name = "login_id", referencedColumnName = "login_id", nullable = false)
+    public AuthEntity getAuthByLoginId() {
+        return authByLoginId;
+    }
+
+    public void setAuthByLoginId(AuthEntity authByLoginId) {
+        this.authByLoginId = authByLoginId;
     }
 }

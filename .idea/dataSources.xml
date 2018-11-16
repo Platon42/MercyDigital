@@ -7,5 +7,15 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://104.207.130.153:5432/mercydb</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="hibernate.cfg.xml/Hibernate" uuid="504a9bc4-0fb1-46b0-a517-33c7deb644dd">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate
+
+/Users/maksimtikhonov/IdeaProjects/DcoreExample/src/main/java/hibernate.cfg.xml</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://104.207.130.153:5432/mercydb</jdbc-url>
+    </data-source>
   </component>
 </project>

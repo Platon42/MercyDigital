@@ -16,6 +16,7 @@ public class OrganizationsEntity {
     private Integer collectedFunds;
     private Integer spentFunds;
     private int loginId;
+    private AuthEntity authByLoginId;
 
     @Basic
     @Column(name = "login", nullable = true, length = 32)
@@ -126,5 +127,15 @@ public class OrganizationsEntity {
     @Override
     public int hashCode() {
         return Objects.hash(login, name, registerDate, address, founders, balance, collectedFunds, spentFunds, loginId);
+    }
+
+    @OneToOne
+    @JoinColumn(name = "login_id", referencedColumnName = "login_id", nullable = false)
+    public AuthEntity getAuthByLoginId() {
+        return authByLoginId;
+    }
+
+    public void setAuthByLoginId(AuthEntity authByLoginId) {
+        this.authByLoginId = authByLoginId;
     }
 }

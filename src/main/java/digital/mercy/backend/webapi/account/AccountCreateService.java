@@ -2,7 +2,9 @@ package digital.mercy.backend.webapi.account;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import digital.mercy.backend.security.Crypto;
 import digital.mercy.backend.utils.CliUtils;
+import digital.mercy.backend.utils.HibernateUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,8 +45,11 @@ public class AccountCreateService extends HttpServlet {
 
         String body = httpreq.getReader().lines().collect(Collectors.joining());
         JsonParser jsonParser = new JsonParser();
-        CliUtils cliUtils = new CliUtils(1, "");
+        Crypto crypto = new Crypto();
 
+        CliUtils cliUtils = new CliUtils(1, crypto.decrypt("ZAiOCWsXC40="));
+
+        HibernateUtils hibernateUtils = new HibernateUtils();
         String type = jsonParser
                 .parse(body)
                 .getAsJsonObject()
@@ -53,6 +58,7 @@ public class AccountCreateService extends HttpServlet {
         switch (type) {
             case "person":{
                 PersonRequest personRequest = new Gson().fromJson(body, PersonRequest.class);
+                hibernateUtils.setClient(personRequest);
                 httpresp.getWriter().print(cliUtils.createAccount(personRequest.getAccountName()));
             }
         }

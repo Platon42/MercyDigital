@@ -12,6 +12,7 @@ public class WalletsEntity {
     private String pubKey;
     private String ownerType;
     private int loginId;
+    private AuthEntity authByLoginId;
 
     @Basic
     @Column(name = "address", nullable = true, length = 100)
@@ -89,5 +90,15 @@ public class WalletsEntity {
     @Override
     public int hashCode() {
         return Objects.hash(address, brainPrivKey, wifPrivKey, pubKey, ownerType, loginId);
+    }
+
+    @OneToOne
+    @JoinColumn(name = "login_id", referencedColumnName = "login_id", nullable = false)
+    public AuthEntity getAuthByLoginId() {
+        return authByLoginId;
+    }
+
+    public void setAuthByLoginId(AuthEntity authByLoginId) {
+        this.authByLoginId = authByLoginId;
     }
 }

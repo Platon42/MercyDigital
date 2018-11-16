@@ -1,0 +1,10 @@
+{
+  "type":"person",
+  "account_name": "decent",
+  "password": "1",
+  "first_name":"maks",
+  "last_name":"t",
+  "birth_date":"04-08-1992",
+  "region":"Moscow",
+  "job":"IT"
+}
