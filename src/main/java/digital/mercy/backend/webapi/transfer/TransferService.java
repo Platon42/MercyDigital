@@ -1,7 +1,8 @@
-package digital.mercy.backend.webapi.auth;
+package digital.mercy.backend.webapi.transfer;
 
 import com.google.gson.Gson;
-import digital.mercy.backend.utils.HibernateUtils;
+import digital.mercy.backend.security.Crypto;
+import digital.mercy.backend.utils.CliUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,9 +12,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
+@WebServlet("/Transfer")
+public class TransferService extends HttpServlet {
 
-@WebServlet("/Auth")
-public class AuthService extends HttpServlet {
+
     @Override
     public void init() {
 
@@ -26,7 +28,7 @@ public class AuthService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is auth service");
+            writer.println("Hello, is Transfer service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,24 +40,18 @@ public class AuthService extends HttpServlet {
     protected void doPost(HttpServletRequest httpreq, HttpServletResponse httpresp) throws IOException {
 
         httpreq.setCharacterEncoding("UTF-8");
-        HibernateUtils hibernateUtils = new HibernateUtils();
-        Gson gson = new Gson();
+        Crypto crypto = new Crypto();
 
         String body = httpreq.getReader().lines().collect(Collectors.joining());
-        AuthReq authReq = new Gson().fromJson(body, AuthReq.class);
-        AuthResp authResp = new AuthResp();
+        TransferReq transferReq = new Gson().fromJson(body, TransferReq.class);
+        CliUtils cliUtils = new CliUtils(  1,crypto.decrypt("ZAiOCWsXC40="));
 
-        if (hibernateUtils.auth(authReq)) {
-            authResp.setSuccess("true");
-            authResp.setAccountName(authReq.getAccountName());
-            authResp.setType(hibernateUtils.getAccType(authReq.getAccountName()));
-        } else {
-            authResp.setSuccess("false");
-            authResp.setAccountName(authReq.getAccountName());
-            authResp.setType("null");
-        }
-        httpresp.getWriter().print(gson.toJson(authResp));
-
+        httpresp.getWriter().print(cliUtils.transfer(
+                transferReq.getSender(),
+                transferReq.getReceiver(),
+                transferReq.getAmount(),
+                transferReq.getCurrency(),
+                transferReq.getPayload()));
     }
-}
 
+}

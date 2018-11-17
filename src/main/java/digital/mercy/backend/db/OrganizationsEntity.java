@@ -6,15 +6,23 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "organizations", schema = "public", catalog = "mercydb")
+@NamedQueries({
+        @NamedQuery(name = "orgInfo",
+                query = "SELECT organizationName,legalAddress,coalesce(founders,'null'),coalesce(ogrn,'null'), " +
+                        "coalesce(inn,'null') FROM OrganizationsEntity WHERE login = :login"),
+        @NamedQuery(name = "orgList",
+                query = "SELECT organizationName FROM OrganizationsEntity")
+
+})
 public class OrganizationsEntity {
     private String login;
     private String organizationName;
     private Date registrationDate;
     private String legalAddress;
     private String founders;
-    private int loginId;
     private String ogrn;
     private String inn;
+    private AuthEntity authByLogin;
 
     @Id
     @Column(name = "login", nullable = false, length = 32)
@@ -67,16 +75,6 @@ public class OrganizationsEntity {
     }
 
     @Basic
-    @Column(name = "login_id", nullable = false)
-    public int getLoginId() {
-        return loginId;
-    }
-
-    public void setLoginId(int loginId) {
-        this.loginId = loginId;
-    }
-
-    @Basic
     @Column(name = "ogrn", nullable = true, length = 100)
     public String getOgrn() {
         return ogrn;
@@ -101,8 +99,7 @@ public class OrganizationsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrganizationsEntity that = (OrganizationsEntity) o;
-        return loginId == that.loginId &&
-                Objects.equals(login, that.login) &&
+        return Objects.equals(login, that.login) &&
                 Objects.equals(organizationName, that.organizationName) &&
                 Objects.equals(registrationDate, that.registrationDate) &&
                 Objects.equals(legalAddress, that.legalAddress) &&
@@ -113,6 +110,16 @@ public class OrganizationsEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, organizationName, registrationDate, legalAddress, founders, loginId, ogrn, inn);
+        return Objects.hash(login, organizationName, registrationDate, legalAddress, founders, ogrn, inn);
+    }
+
+    @OneToOne
+    @JoinColumn(name = "login", referencedColumnName = "login", nullable = false)
+    public AuthEntity getAuthByLogin() {
+        return authByLogin;
+    }
+
+    public void setAuthByLogin(AuthEntity authByLogin) {
+        this.authByLogin = authByLogin;
     }
 }

@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="MercyDigital" target="1.8" />
+      <module name="MercyDigital" target="1.9" />
     </bytecodeTargetLevel>
   </component>
 </project>

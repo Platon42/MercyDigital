@@ -3,7 +3,6 @@ package digital.mercy.backend.webapi.balance;
 import com.google.gson.Gson;
 import digital.mercy.backend.security.Crypto;
 import digital.mercy.backend.utils.CliUtils;
-import digital.mercy.backend.webapi.history.HistoryRequest;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.util.stream.Collectors;
 
-@WebServlet("/Transfer")
-public class TransferService extends HttpServlet {
-
+@WebServlet("/getBalance")
+public class BalanceService extends HttpServlet {
 
     @Override
     public void init() {
@@ -29,7 +28,7 @@ public class TransferService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is Transfer service");
+            writer.println("Hello, is balance service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,16 +41,13 @@ public class TransferService extends HttpServlet {
 
         httpreq.setCharacterEncoding("UTF-8");
         Crypto crypto = new Crypto();
-
         String body = httpreq.getReader().lines().collect(Collectors.joining());
-        TransferReq transferReq = new Gson().fromJson(body, TransferReq.class);
+        BalanceReq balanceReq = new Gson().fromJson(body, BalanceReq.class);
+
         CliUtils cliUtils = new CliUtils(  1,crypto.decrypt("ZAiOCWsXC40="));
 
-        httpresp.getWriter().print(cliUtils.transfer(
-                transferReq.getSender(),
-                transferReq.getReceiver(),
-                transferReq.getAmount(),
-                transferReq.getCurrency()));
-    }
+        httpresp.getWriter().print(cliUtils.getBalance(balanceReq.getAccountName()));
 
+
+    }
 }

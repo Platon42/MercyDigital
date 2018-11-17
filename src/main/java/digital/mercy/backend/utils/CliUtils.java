@@ -1,12 +1,5 @@
 package digital.mercy.backend.utils;
 
-import ch.decent.sdk.api.AccountApi;
-import ch.decent.sdk.api.TransactionApi;
-import ch.decent.sdk.crypto.Address;
-import ch.decent.sdk.crypto.ECKeyPair;
-import ch.decent.sdk.model.AccountCreateOperation;
-import ch.decent.sdk.model.ChainObject;
-import ch.decent.sdk.model.ObjectType;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -57,7 +50,7 @@ public class CliUtils {
         return answer;
     }
 
-    public String transfer (String sender, String receiver, String amount, String currency) throws IOException {
+    public String transfer (String sender, String receiver, String amount, String currency, String payload) throws IOException {
 
         unlockWallet();
         List<String> params = new ArrayList<>();
@@ -66,7 +59,7 @@ public class CliUtils {
         params.add(receiver);
         params.add(amount);
         params.add(currency);
-        params.add("OK");
+        params.add(payload);
         params.add("true");
 
         return toCLI(buidJson("transfer", params));
@@ -113,6 +106,14 @@ public class CliUtils {
         return toCLI(buidJson("get_account_history", params));
     }
 
+    public String getBalance (String account) throws IOException {
+
+        unlockWallet();
+        List<String> params = new ArrayList<>();
+        params.add(account);
+
+        return toCLI(buidJson("list_account_balances", params));
+    }
 
 
     private boolean unlockWallet() throws IOException {
@@ -161,8 +162,12 @@ public class CliUtils {
                 return gson.toJson(CLIReq);
 
             }
+            case "list_account_balances" : {
+                CLIReq.setMethod("list_account_balances");
+                CLIReq.setParams(params);
+                return gson.toJson(CLIReq);
 
-
+            }
         }
 
         return "";

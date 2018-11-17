@@ -13,9 +13,11 @@ import java.util.Objects;
 public class AuthEntity {
     private String login;
     private String password;
-    private int loginId;
+    private ClientsEntity clientsByLogin;
+    private OrganizationsEntity organizationsByLogin;
+    private WalletsEntity walletsByLogin;
 
-    @Basic
+    @Id
     @Column(name = "login", nullable = false, length = 100)
     public String getLogin() {
         return login;
@@ -35,29 +37,44 @@ public class AuthEntity {
         this.password = password;
     }
 
-    @Id
-    @Column(name = "login_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getLoginId() {
-        return loginId;
-    }
-
-    public void setLoginId(int loginId) {
-        this.loginId = loginId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthEntity that = (AuthEntity) o;
-        return loginId == that.loginId &&
-                Objects.equals(login, that.login) &&
+        return Objects.equals(login, that.login) &&
                 Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, password, loginId);
+        return Objects.hash(login, password);
+    }
+
+    @OneToOne(mappedBy = "authByLogin")
+    public ClientsEntity getClientsByLogin() {
+        return clientsByLogin;
+    }
+
+    public void setClientsByLogin(ClientsEntity clientsByLogin) {
+        this.clientsByLogin = clientsByLogin;
+    }
+
+    @OneToOne(mappedBy = "authByLogin")
+    public OrganizationsEntity getOrganizationsByLogin() {
+        return organizationsByLogin;
+    }
+
+    public void setOrganizationsByLogin(OrganizationsEntity organizationsByLogin) {
+        this.organizationsByLogin = organizationsByLogin;
+    }
+
+    @OneToOne(mappedBy = "authByLogin")
+    public WalletsEntity getWalletsByLogin() {
+        return walletsByLogin;
+    }
+
+    public void setWalletsByLogin(WalletsEntity walletsByLogin) {
+        this.walletsByLogin = walletsByLogin;
     }
 }

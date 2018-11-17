@@ -6,6 +6,12 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "clients", schema = "public", catalog = "mercydb")
+@NamedQueries({
+        @NamedQuery(name = "clientInfo",
+                query = "SELECT firstName,lastName,coalesce(region,'null'),coalesce(job,'null'), " +
+                        "coalesce(phone,'null') FROM ClientsEntity WHERE login = :login"),
+
+})
 public class ClientsEntity {
     private String login;
     private String phone;
@@ -14,12 +20,11 @@ public class ClientsEntity {
     private String region;
     private String job;
     private Integer balance;
-    private int loginId;
     private String lastName;
-    private AuthEntity authByLoginId;
+    private AuthEntity authByLogin;
 
-    @Basic
-    @Column(name = "login", nullable = true, length = 32)
+    @Id
+    @Column(name = "login", nullable = false, length = 100)
     public String getLogin() {
         return login;
     }
@@ -29,7 +34,7 @@ public class ClientsEntity {
     }
 
     @Basic
-    @Column(name = "phone", nullable = true, length = 32)
+    @Column(name = "phone", nullable = true, length = 100)
     public String getPhone() {
         return phone;
     }
@@ -88,16 +93,6 @@ public class ClientsEntity {
         this.balance = balance;
     }
 
-    @Id
-    @Column(name = "login_id", nullable = false)
-    public int getLoginId() {
-        return loginId;
-    }
-
-    public void setLoginId(int loginId) {
-        this.loginId = loginId;
-    }
-
     @Basic
     @Column(name = "last_name", nullable = true, length = 100)
     public String getLastName() {
@@ -113,8 +108,7 @@ public class ClientsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientsEntity that = (ClientsEntity) o;
-        return loginId == that.loginId &&
-                Objects.equals(login, that.login) &&
+        return Objects.equals(login, that.login) &&
                 Objects.equals(phone, that.phone) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(birthDate, that.birthDate) &&
@@ -126,16 +120,16 @@ public class ClientsEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, phone, firstName, birthDate, region, job, balance, loginId, lastName);
+        return Objects.hash(login, phone, firstName, birthDate, region, job, balance, lastName);
     }
 
     @OneToOne
-    @JoinColumn(name = "login_id", referencedColumnName = "login_id", nullable = false)
-    public AuthEntity getAuthByLoginId() {
-        return authByLoginId;
+    @JoinColumn(name = "login", referencedColumnName = "login", nullable = false)
+    public AuthEntity getAuthByLogin() {
+        return authByLogin;
     }
 
-    public void setAuthByLoginId(AuthEntity authByLoginId) {
-        this.authByLoginId = authByLoginId;
+    public void setAuthByLogin(AuthEntity authByLogin) {
+        this.authByLogin = authByLogin;
     }
 }

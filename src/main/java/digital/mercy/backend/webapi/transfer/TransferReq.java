@@ -1,5 +1,5 @@
 
-package digital.mercy.backend.webapi.balance;
+package digital.mercy.backend.webapi.transfer;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -18,6 +18,11 @@ public class TransferReq {
     @SerializedName("currency")
     @Expose
     private String currency;
+
+    @SerializedName("payload")
+    @Expose
+    private String payload;
+
 
     public String getSender() {
         return sender;
@@ -51,4 +56,11 @@ public class TransferReq {
         this.currency = currency;
     }
 
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
 }

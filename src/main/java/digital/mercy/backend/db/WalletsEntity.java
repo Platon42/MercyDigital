@@ -16,8 +16,8 @@ public class WalletsEntity {
     private String wifPrivKey;
     private String pubKey;
     private String ownerType;
-    private int loginId;
     private String login;
+    private AuthEntity authByLogin;
 
     @Basic
     @Column(name = "address", nullable = true, length = 100)
@@ -69,16 +69,6 @@ public class WalletsEntity {
         this.ownerType = ownerType;
     }
 
-    @Basic
-    @Column(name = "login_id", nullable = false)
-    public int getLoginId() {
-        return loginId;
-    }
-
-    public void setLoginId(int loginId) {
-        this.loginId = loginId;
-    }
-
     @Id
     @Column(name = "login", nullable = false, length = 100)
     public String getLogin() {
@@ -94,8 +84,7 @@ public class WalletsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WalletsEntity that = (WalletsEntity) o;
-        return loginId == that.loginId &&
-                Objects.equals(address, that.address) &&
+        return Objects.equals(address, that.address) &&
                 Objects.equals(brainPrivKey, that.brainPrivKey) &&
                 Objects.equals(wifPrivKey, that.wifPrivKey) &&
                 Objects.equals(pubKey, that.pubKey) &&
@@ -105,6 +94,16 @@ public class WalletsEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(address, brainPrivKey, wifPrivKey, pubKey, ownerType, loginId, login);
+        return Objects.hash(address, brainPrivKey, wifPrivKey, pubKey, ownerType, login);
+    }
+
+    @OneToOne
+    @JoinColumn(name = "login", referencedColumnName = "login", nullable = false)
+    public AuthEntity getAuthByLogin() {
+        return authByLogin;
+    }
+
+    public void setAuthByLogin(AuthEntity authByLogin) {
+        this.authByLogin = authByLogin;
     }
 }

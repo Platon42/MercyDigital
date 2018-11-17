@@ -1,4 +1,4 @@
-package digital.mercy.backend.webapi.auth;
+package digital.mercy.backend.webapi.info;
 
 import com.google.gson.Gson;
 import digital.mercy.backend.utils.HibernateUtils;
@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
+@WebServlet("/getOrgList")
+public class OrgListService extends HttpServlet {
 
-@WebServlet("/Auth")
-public class AuthService extends HttpServlet {
     @Override
     public void init() {
 
@@ -26,7 +26,7 @@ public class AuthService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is auth service");
+            writer.println("Hello, is getList service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,24 +38,13 @@ public class AuthService extends HttpServlet {
     protected void doPost(HttpServletRequest httpreq, HttpServletResponse httpresp) throws IOException {
 
         httpreq.setCharacterEncoding("UTF-8");
-        HibernateUtils hibernateUtils = new HibernateUtils();
         Gson gson = new Gson();
-
-        String body = httpreq.getReader().lines().collect(Collectors.joining());
-        AuthReq authReq = new Gson().fromJson(body, AuthReq.class);
-        AuthResp authResp = new AuthResp();
-
-        if (hibernateUtils.auth(authReq)) {
-            authResp.setSuccess("true");
-            authResp.setAccountName(authReq.getAccountName());
-            authResp.setType(hibernateUtils.getAccType(authReq.getAccountName()));
-        } else {
-            authResp.setSuccess("false");
-            authResp.setAccountName(authReq.getAccountName());
-            authResp.setType("null");
-        }
-        httpresp.getWriter().print(gson.toJson(authResp));
+        HibernateUtils hibernateUtils = new HibernateUtils();
+        OrgListResp orgListResp = new OrgListResp();
+        orgListResp.setOrgNames(hibernateUtils.getOrgList());
+        httpresp.getWriter().print(gson.toJson(orgListResp));
 
     }
-}
 
+
+}

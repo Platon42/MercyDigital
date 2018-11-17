@@ -1,10 +1,10 @@
-package digital.mercy.backend.webapi.account;
+package digital.mercy.backend.webapi.info;
+
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import digital.mercy.backend.security.Crypto;
-import digital.mercy.backend.utils.CliUtils;
+
 import digital.mercy.backend.utils.HibernateUtils;
+
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,7 +29,7 @@ public class AccInfoService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is getInfo service");
+            writer.println("Hello, is getAccInfo service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,33 +43,11 @@ public class AccInfoService extends HttpServlet {
         httpreq.setCharacterEncoding("UTF-8");
 
         String body = httpreq.getReader().lines().collect(Collectors.joining());
-        JsonParser jsonParser = new JsonParser();
-        Crypto crypto = new Crypto();
-
-        CliUtils cliUtils = new CliUtils(1, crypto.decrypt("ZAiOCWsXC40="));
-
         HibernateUtils hibernateUtils = new HibernateUtils();
-
-        String type = jsonParser
-                .parse(body)
-                .getAsJsonObject()
-                .get("type").getAsString();
-
-        switch (type) {
-            case "person":{
-                PersonRequest personRequest = new Gson().fromJson(body, PersonRequest.class);
-
-                httpresp.getWriter().print(cliUtils.createAccount(personRequest.getAccountName()));
-                break;
-            }
-            case "org" :{
-                OrgRequest orgRequest = new Gson().fromJson(body, OrgRequest.class);
-
-                httpresp.getWriter().print(cliUtils.createAccount(orgRequest.getAccountName()));
-                break;
-            }
-        }
-
+        AccInfoReq accInfoReq = new Gson().fromJson(body, AccInfoReq.class);
+        String resp = hibernateUtils.getAccInfo(accInfoReq.getType(), accInfoReq.getName());
+        httpresp.getWriter().print(resp);
 
     }
+
 }
