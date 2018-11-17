@@ -1,10 +1,10 @@
-package digital.mercy.backend.webapi.history;
+package digital.mercy.backend.webapi.Auth;
 
 import com.google.gson.Gson;
 import digital.mercy.backend.security.Crypto;
 import digital.mercy.backend.utils.CliUtils;
+import digital.mercy.backend.webapi.balance.TransferReq;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,10 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-@WebServlet("/getHistory")
-public class HistoryService extends HttpServlet {
-
-
+public class AuthService extends HttpServlet {
     @Override
     public void init() {
 
@@ -28,7 +25,7 @@ public class HistoryService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is getHistory service");
+            writer.println("Hello, is Auth service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,14 +37,12 @@ public class HistoryService extends HttpServlet {
     protected void doPost(HttpServletRequest httpreq, HttpServletResponse httpresp) throws IOException {
 
         httpreq.setCharacterEncoding("UTF-8");
-        Crypto crypto = new Crypto();
 
         String body = httpreq.getReader().lines().collect(Collectors.joining());
-        HistoryRequest historyRequest = new Gson().fromJson(body, HistoryRequest.class);
-        CliUtils cliUtils = new CliUtils(1, crypto.decrypt("pGfmlPs2f9Q="));
+        AuthReq authReq = new Gson().fromJson(body, AuthReq.class);
 
-        httpresp.getWriter().print(cliUtils.getHistory(historyRequest.getAccount(), historyRequest.getDepth()));
+
 
     }
-
 }
+

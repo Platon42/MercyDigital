@@ -5,6 +5,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "auth", schema = "public", catalog = "mercydb")
+@NamedQueries({
+        @NamedQuery(name = "checkLogin",
+                query = "SELECT count(*) FROM AuthEntity WHERE login = :login and password=:password"),
+
+})
 public class AuthEntity {
     private String login;
     private String password;
@@ -32,6 +37,7 @@ public class AuthEntity {
 
     @Id
     @Column(name = "login_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getLoginId() {
         return loginId;
     }

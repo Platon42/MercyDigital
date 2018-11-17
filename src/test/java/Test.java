@@ -33,7 +33,8 @@ public class Test {
         //cliUtils.transfer("decent","seeder","3","DCT");
         Crypto crypto = new Crypto();
         System.out.println(crypto.encrypt("dshd98d4"));
-        System.out.println(crypto.decrypt("ZAiOCWsXC40="));
+
+        System.out.println(crypto.decrypt("pGfmlPs2f9Q="));
         //System.out.println(cliUtils.createAccount("maksimmmm"));
 
 

@@ -12,15 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Hashtable;
 import java.util.stream.Collectors;
 
-@WebServlet("/createAccount")
-public class AccountCreateService extends HttpServlet {
-
+@WebServlet("/getAccInfo")
+public class AccInfoService extends HttpServlet {
 
     @Override
     public void init() {
+
     }
 
     @Override
@@ -30,7 +29,7 @@ public class AccountCreateService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is createAccount service");
+            writer.println("Hello, is getInfo service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,40 +46,29 @@ public class AccountCreateService extends HttpServlet {
         JsonParser jsonParser = new JsonParser();
         Crypto crypto = new Crypto();
 
-        CliUtils cliUtils = new CliUtils(1, crypto.decrypt("pGfmlPs2f9Q="));
-
+        CliUtils cliUtils = new CliUtils(1, crypto.decrypt("ZAiOCWsXC40="));
 
         HibernateUtils hibernateUtils = new HibernateUtils();
+
         String type = jsonParser
                 .parse(body)
                 .getAsJsonObject()
                 .get("type").getAsString();
-        System.out.println(type);
+
         switch (type) {
             case "person":{
                 PersonRequest personRequest = new Gson().fromJson(body, PersonRequest.class);
-                Hashtable<String, String> utilsAccount = cliUtils.createAccount(personRequest.getAccountName());
 
-                String json = utilsAccount.get("json");
-                String address = utilsAccount.get("address");
-
-                hibernateUtils.setClient(personRequest,address,"person");
-                httpresp.getWriter().print(json);
+                httpresp.getWriter().print(cliUtils.createAccount(personRequest.getAccountName()));
                 break;
             }
             case "org" :{
                 OrgRequest orgRequest = new Gson().fromJson(body, OrgRequest.class);
-                Hashtable<String, String> utilsAccount = cliUtils.createAccount(orgRequest.getAccountName());
 
-                String json = utilsAccount.get("json");
-                String address = utilsAccount.get("address");
-
-                hibernateUtils.setClient(orgRequest,address,"org");
-                httpresp.getWriter().print(json);
+                httpresp.getWriter().print(cliUtils.createAccount(orgRequest.getAccountName()));
                 break;
             }
         }
-
 
 
     }

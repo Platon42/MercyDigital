@@ -1,14 +1,9 @@
 package digital.mercy.backend.security;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +11,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
-
+import java.util.Base64;
 
 public class Crypto {
 
@@ -25,11 +19,13 @@ public class Crypto {
     private final static String initialVectorString = "0123456789123456";
 
     public Crypto() throws IOException {
-        FileInputStream fis;
-        Properties properties = new Properties();
-        fis = new FileInputStream("src/main/resources/config.properties");
-        properties.load(fis);
-        this.secretKey=properties.getProperty("secret_key");
+//        InputStream fis;
+//        Properties properties = new Properties();
+//        fis = Crypto.class.getResourceAsStream("resources/config.properties");
+//
+//        properties.load(fis);
+        //this.secretKey=properties.getProperty("secret_key");
+        this.secretKey="msR~NXc~,-Ng/ZM%#73Q#tzF}6M-&:K2G";
 
     }
     private static String md5(final String input) throws NoSuchAlgorithmException {
@@ -56,7 +52,7 @@ public class Crypto {
             // Encrypt the data
             final byte[] encryptedByteArray = cipher.doFinal(dataToEncrypt.getBytes());
             // Encode using Base64
-            encryptedData = (new BASE64Encoder()).encode(encryptedByteArray);
+            encryptedData = new String(Base64.getEncoder().encode(encryptedByteArray),StandardCharsets.UTF_8);
         } catch (Exception e) {
             System.err.println("Problem encrypting the data");
             e.printStackTrace();
@@ -70,7 +66,7 @@ public class Crypto {
             // Initialize the cipher
             final Cipher cipher = initCipher(Cipher.DECRYPT_MODE);
             // Decode using Base64
-            final byte[] encryptedByteArray = (new BASE64Decoder()).decodeBuffer(encryptedData);
+            final byte[] encryptedByteArray = (Base64.getDecoder().decode((encryptedData.getBytes())));
             // Decrypt the data
             final byte[] decryptedByteArray = cipher.doFinal(encryptedByteArray);
             decryptedData = new String(decryptedByteArray, StandardCharsets.UTF_8);

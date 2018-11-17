@@ -8,18 +8,16 @@ import java.util.Objects;
 @Table(name = "organizations", schema = "public", catalog = "mercydb")
 public class OrganizationsEntity {
     private String login;
-    private String name;
-    private Date registerDate;
-    private String address;
+    private String organizationName;
+    private Date registrationDate;
+    private String legalAddress;
     private String founders;
-    private Integer balance;
-    private Integer collectedFunds;
-    private Integer spentFunds;
     private int loginId;
-    private AuthEntity authByLoginId;
+    private String ogrn;
+    private String inn;
 
-    @Basic
-    @Column(name = "login", nullable = true, length = 32)
+    @Id
+    @Column(name = "login", nullable = false, length = 32)
     public String getLogin() {
         return login;
     }
@@ -29,33 +27,33 @@ public class OrganizationsEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 100)
-    public String getName() {
-        return name;
+    @Column(name = "organization_name", nullable = true, length = 100)
+    public String getOrganizationName() {
+        return organizationName;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Basic
-    @Column(name = "register_date", nullable = true)
-    public Date getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(Date registerDate) {
-        this.registerDate = registerDate;
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
     }
 
     @Basic
-    @Column(name = "address", nullable = true, length = 100)
-    public String getAddress() {
-        return address;
+    @Column(name = "registration_date", nullable = true)
+    public Date getRegistrationDate() {
+        return registrationDate;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    @Basic
+    @Column(name = "legal_address", nullable = true, length = 100)
+    public String getLegalAddress() {
+        return legalAddress;
+    }
+
+    public void setLegalAddress(String legalAddress) {
+        this.legalAddress = legalAddress;
     }
 
     @Basic
@@ -69,36 +67,6 @@ public class OrganizationsEntity {
     }
 
     @Basic
-    @Column(name = "balance", nullable = true)
-    public Integer getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Integer balance) {
-        this.balance = balance;
-    }
-
-    @Basic
-    @Column(name = "collected_funds", nullable = true)
-    public Integer getCollectedFunds() {
-        return collectedFunds;
-    }
-
-    public void setCollectedFunds(Integer collectedFunds) {
-        this.collectedFunds = collectedFunds;
-    }
-
-    @Basic
-    @Column(name = "spent_funds", nullable = true)
-    public Integer getSpentFunds() {
-        return spentFunds;
-    }
-
-    public void setSpentFunds(Integer spentFunds) {
-        this.spentFunds = spentFunds;
-    }
-
-    @Id
     @Column(name = "login_id", nullable = false)
     public int getLoginId() {
         return loginId;
@@ -108,6 +76,26 @@ public class OrganizationsEntity {
         this.loginId = loginId;
     }
 
+    @Basic
+    @Column(name = "ogrn", nullable = true, length = 100)
+    public String getOgrn() {
+        return ogrn;
+    }
+
+    public void setOgrn(String ogrn) {
+        this.ogrn = ogrn;
+    }
+
+    @Basic
+    @Column(name = "inn", nullable = true, length = 100)
+    public String getInn() {
+        return inn;
+    }
+
+    public void setInn(String inn) {
+        this.inn = inn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,27 +103,16 @@ public class OrganizationsEntity {
         OrganizationsEntity that = (OrganizationsEntity) o;
         return loginId == that.loginId &&
                 Objects.equals(login, that.login) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(registerDate, that.registerDate) &&
-                Objects.equals(address, that.address) &&
+                Objects.equals(organizationName, that.organizationName) &&
+                Objects.equals(registrationDate, that.registrationDate) &&
+                Objects.equals(legalAddress, that.legalAddress) &&
                 Objects.equals(founders, that.founders) &&
-                Objects.equals(balance, that.balance) &&
-                Objects.equals(collectedFunds, that.collectedFunds) &&
-                Objects.equals(spentFunds, that.spentFunds);
+                Objects.equals(ogrn, that.ogrn) &&
+                Objects.equals(inn, that.inn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, name, registerDate, address, founders, balance, collectedFunds, spentFunds, loginId);
-    }
-
-    @OneToOne
-    @JoinColumn(name = "login_id", referencedColumnName = "login_id", nullable = false)
-    public AuthEntity getAuthByLoginId() {
-        return authByLoginId;
-    }
-
-    public void setAuthByLoginId(AuthEntity authByLoginId) {
-        this.authByLoginId = authByLoginId;
+        return Objects.hash(login, organizationName, registrationDate, legalAddress, founders, loginId, ogrn, inn);
     }
 }

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 public class CliUtils {
@@ -34,41 +35,26 @@ public class CliUtils {
         this.password = password;
     }
 
-    public String createAccount(String account_name) throws IOException {
+    public Hashtable<String,String> createAccount(String account_name) throws IOException {
 
 //        ECKeyPair ecKeyPair = new ECKeyPair(new SecureRandom());
 //        Address dstAddress = new Address(ecKeyPair.getPublic(), "DCT");
 //
 //        new AccountCreateOperation(new ChainObject(ObjectType.ACCOUNT_OBJECT), account_name, dstAddress);
 
-        unlockWallet();
-        String suggest = toCLI(buidJson("suggest_brain_key",null));
-        System.out.println(suggest);
-        JsonParser jsonParser = new JsonParser();
 
-        String address = jsonParser
-                .parse(suggest)
-                .getAsJsonObject().getAsJsonObject("result")
-                .get("pub_key").getAsString();
-        String priv_key = jsonParser
-                .parse(suggest)
-                .getAsJsonObject().getAsJsonObject("result")
-                .get("wif_priv_key").getAsString();
-        String brain_priv_key = jsonParser
-                .parse(suggest)
-                .getAsJsonObject().getAsJsonObject("result")
-                .get("brain_priv_key").getAsString();
-        
-        
         List<String> params = new ArrayList<>();
+        Hashtable<String, String> answer = suggest();
 
         params.add(account_name);
-        params.add(address);
-        params.add(address);
+        params.add(answer.get("address"));
+        params.add(answer.get("address"));
         params.add("decent");
         params.add("true");
 
-        return toCLI(buidJson("register_account", params));
+        answer.put("json",toCLI(buidJson("register_account", params)));
+
+        return answer;
     }
 
     public String transfer (String sender, String receiver, String amount, String currency) throws IOException {
@@ -86,6 +72,36 @@ public class CliUtils {
         return toCLI(buidJson("transfer", params));
 
     }
+
+    public Hashtable<String,String> suggest() throws IOException{
+
+        unlockWallet();
+        String suggest = toCLI(buidJson("suggest_brain_key",null));
+
+        JsonParser jsonParser = new JsonParser();
+
+        Hashtable<String,String> hashtable = new Hashtable<>();
+        String address = jsonParser
+                .parse(suggest)
+                .getAsJsonObject().getAsJsonObject("result")
+                .get("pub_key").getAsString();
+        String priv_key = jsonParser
+                .parse(suggest)
+                .getAsJsonObject().getAsJsonObject("result")
+                .get("wif_priv_key").getAsString();
+        String brain_priv_key = jsonParser
+                .parse(suggest)
+                .getAsJsonObject().getAsJsonObject("result")
+                .get("brain_priv_key").getAsString();
+
+        hashtable.put("address",address);
+        hashtable.put("priv_key",priv_key);
+        hashtable.put("brain_priv_key",brain_priv_key);
+
+        return hashtable;
+
+    }
+
 
     public String getHistory (String address, String depth) throws IOException {
 
