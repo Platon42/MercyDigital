@@ -1,9 +1,7 @@
-package digital.mercy.backend.webapi.Auth;
+package digital.mercy.backend.webapi.auth;
 
 import com.google.gson.Gson;
-import digital.mercy.backend.security.Crypto;
-import digital.mercy.backend.utils.CliUtils;
-import digital.mercy.backend.webapi.balance.TransferReq;
+import digital.mercy.backend.utils.HibernateUtils;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,7 @@ public class AuthService extends HttpServlet {
 
             PrintWriter writer = httpresp.getWriter();
             httpreq.setCharacterEncoding("UTF-8");
-            writer.println("Hello, is Auth service");
+            writer.println("Hello, is auth service");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,10 +35,21 @@ public class AuthService extends HttpServlet {
     protected void doPost(HttpServletRequest httpreq, HttpServletResponse httpresp) throws IOException {
 
         httpreq.setCharacterEncoding("UTF-8");
+        HibernateUtils hibernateUtils = new HibernateUtils();
 
         String body = httpreq.getReader().lines().collect(Collectors.joining());
         AuthReq authReq = new Gson().fromJson(body, AuthReq.class);
+        AuthResp authResp = new AuthResp();
 
+        if (hibernateUtils.auth(authReq)) {
+            authResp.setSuccess("true");
+            authResp.setAccountName(authReq.getAccountName());
+            authResp.setType(hibernateUtils.getAccType(authReq.getAccountName()));
+        } else {
+            authResp.setSuccess("false");
+            authResp.setAccountName(authReq.getAccountName());
+            authResp.setType(hibernateUtils.getAccType(authReq.getAccountName()));
+        }
 
 
     }

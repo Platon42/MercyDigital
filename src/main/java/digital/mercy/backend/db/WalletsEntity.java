@@ -5,6 +5,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "wallets", schema = "public", catalog = "mercydb")
+@NamedQueries({
+        @NamedQuery(name = "walletType",
+                query = "SELECT ownerType FROM WalletsEntity WHERE login = :login"),
+
+})
 public class WalletsEntity {
     private String address;
     private String brainPrivKey;
@@ -12,7 +17,7 @@ public class WalletsEntity {
     private String pubKey;
     private String ownerType;
     private int loginId;
-    private AuthEntity authByLoginId;
+    private String login;
 
     @Basic
     @Column(name = "address", nullable = true, length = 100)
@@ -64,7 +69,7 @@ public class WalletsEntity {
         this.ownerType = ownerType;
     }
 
-    @Id
+    @Basic
     @Column(name = "login_id", nullable = false)
     public int getLoginId() {
         return loginId;
@@ -72,6 +77,16 @@ public class WalletsEntity {
 
     public void setLoginId(int loginId) {
         this.loginId = loginId;
+    }
+
+    @Id
+    @Column(name = "login", nullable = false, length = 100)
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     @Override
@@ -84,21 +99,12 @@ public class WalletsEntity {
                 Objects.equals(brainPrivKey, that.brainPrivKey) &&
                 Objects.equals(wifPrivKey, that.wifPrivKey) &&
                 Objects.equals(pubKey, that.pubKey) &&
-                Objects.equals(ownerType, that.ownerType);
+                Objects.equals(ownerType, that.ownerType) &&
+                Objects.equals(login, that.login);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(address, brainPrivKey, wifPrivKey, pubKey, ownerType, loginId);
-    }
-
-    @OneToOne
-    @JoinColumn(name = "login_id", referencedColumnName = "login_id", nullable = false)
-    public AuthEntity getAuthByLoginId() {
-        return authByLoginId;
-    }
-
-    public void setAuthByLoginId(AuthEntity authByLoginId) {
-        this.authByLoginId = authByLoginId;
+        return Objects.hash(address, brainPrivKey, wifPrivKey, pubKey, ownerType, loginId, login);
     }
 }

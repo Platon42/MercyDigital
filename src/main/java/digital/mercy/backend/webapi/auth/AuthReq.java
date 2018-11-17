@@ -1,4 +1,4 @@
-package digital.mercy.backend.webapi.Auth;
+package digital.mercy.backend.webapi.auth;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

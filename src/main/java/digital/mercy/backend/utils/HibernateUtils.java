@@ -4,19 +4,13 @@ import digital.mercy.backend.db.AuthEntity;
 import digital.mercy.backend.db.ClientsEntity;
 import digital.mercy.backend.db.OrganizationsEntity;
 import digital.mercy.backend.db.WalletsEntity;
-import digital.mercy.backend.webapi.Auth.AuthReq;
+import digital.mercy.backend.webapi.auth.AuthReq;
 import digital.mercy.backend.webapi.account.OrgRequest;
 import digital.mercy.backend.webapi.account.PersonRequest;
 import org.hibernate.*;
-import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import javax.persistence.metamodel.EntityType;
-
-import java.sql.SQLException;
-import java.util.Map;
 
 public class HibernateUtils {
 
@@ -63,7 +57,8 @@ public class HibernateUtils {
 
         walletsEntity.setAddress(address);
         walletsEntity.setOwnerType(ownertype);
-        walletsEntity.setAuthByLoginId(authEntity);
+        walletsEntity.setLoginId(authEntity.getLoginId());
+        //walletsEntity.setAuthByLoginId(authEntity);
 
         session.persist(authEntity);
         session.persist(clientsEntity);
@@ -95,7 +90,9 @@ public class HibernateUtils {
 
         walletsEntity.setAddress(address);
         walletsEntity.setOwnerType(ownertype);
-        walletsEntity.setAuthByLoginId(authEntity);
+        walletsEntity.setLoginId(authEntity.getLoginId());
+
+        //walletsEntity.setAuthByLoginId(authEntity);
 
         session.persist(organizationsEntity);
         session.persist(walletsEntity);
@@ -126,6 +123,17 @@ public class HibernateUtils {
         tx.commit();
 
         return authCnt.intValue() == 1;
+    }
+
+    public String getAccType (String login) {
+
+        final Session session = HibernateUtils.getSession();
+        Transaction tx = session.beginTransaction();
+
+        Query qType = session.getNamedQuery("walletType").
+                setParameter("login", login);
+
+        return (String) qType.getSingleResult();
     }
 
 }
